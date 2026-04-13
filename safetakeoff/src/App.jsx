@@ -9,6 +9,7 @@ import AppErrorBoundary from "./Components/Common/AppErrorBoundary";
 import Login from "./Components/Login/Login";
 import LandingPage from "./Components/Landing/LandingPage";
 import SignUp from "./Components/SignUp/SignUp";
+import NotFound from "./Components/Common/NotFound";
 
 // ── P2-9: Lazy-loaded route components ──────────────────────────────────────
 const Dashboard = lazy(() => import("./Components/Dashboard/Dashboard"));
@@ -184,8 +185,11 @@ function App() {
                 />
               </Route>
 
-              {/* Catch-all → landing */}
-              <Route path="*" element={<Navigate to="/" replace />} />
+              {/* 404 Route */}
+              <Route path="/404" element={<NotFound />} />
+
+              {/* Catch-all → 404 */}
+              <Route path="*" element={<Navigate to="/404" replace />} />
             </Routes>
           </div>
         </BrowserRouter>

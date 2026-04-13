@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "SafeTakeOff",
+  "name": "SafeTakeOff - ATC Command Center",
+  "description": "High-fidelity Air Traffic Control Command Center and Fleet Management",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +21,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#0a0d11",
+  "background_color": "#0a0d11"
 }
