@@ -32,7 +32,7 @@ export default function Login() {
 
   // If already logged in, redirect to dashboard
   React.useEffect(() => {
-    if (isLoggedIn) navigate('/', { replace: true });
+    if (isLoggedIn) navigate('/dashboard', { replace: true });
   }, [isLoggedIn, navigate]);
 
   const handleSubmit = async (event) => {

@@ -1,6 +1,18 @@
 import api from './api';
 import type { LoginRequest, TokenResponse } from '../types/aviation';
 
+export interface SignUpRequest {
+  full_name: string;
+  email: string;
+  password: string;
+  organisation?: string;
+}
+
+export interface SignUpResponse {
+  message: string;
+  email: string;
+}
+
 export async function login(credentials: LoginRequest): Promise<TokenResponse> {
   const { data } = await api.post<TokenResponse>('/auth/login', credentials);
   // Persist tokens for the session
@@ -24,4 +36,9 @@ export function logout(): void {
 
 export function isAuthenticated(): boolean {
   return !!sessionStorage.getItem('access_token');
+}
+
+export async function signUp(body: SignUpRequest): Promise<SignUpResponse> {
+  const { data } = await api.post<SignUpResponse>('/auth/signup', body);
+  return data;
 }

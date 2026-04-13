@@ -7,6 +7,8 @@ import { createTheme } from "@mui/material/styles";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 import AppErrorBoundary from "./Components/Common/AppErrorBoundary";
 import Login from "./Components/Login/Login";
+import LandingPage from "./Components/Landing/LandingPage";
+import SignUp from "./Components/SignUp/SignUp";
 
 // ── P2-9: Lazy-loaded route components ──────────────────────────────────────
 const Dashboard = lazy(() => import("./Components/Dashboard/Dashboard"));
@@ -103,13 +105,15 @@ function App() {
         <BrowserRouter>
           <div className="App">
             <Routes>
-              {/* Public route */}
+              {/* Public routes */}
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
 
               {/* Protected routes — require valid JWT */}
               <Route element={<ProtectedRoute />}>
                 <Route
-                  path="/"
+                  path="/dashboard"
                   element={
                     <AppErrorBoundary>
                       <Suspense fallback={<RouteLoader />}>
@@ -180,7 +184,7 @@ function App() {
                 />
               </Route>
 
-              {/* Catch-all → dashboard */}
+              {/* Catch-all → landing */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
