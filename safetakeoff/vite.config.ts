@@ -1,7 +1,24 @@
-// vite.config.ts
-import { defineConfig } from 'vite'
-import reactRefresh from '@vitejs/plugin-react-refresh'
+// vite.config.ts  (Phase 2: vitest added)
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  plugins: [reactRefresh()]
-})
+  plugins: [react()],
+  server: {
+    port: 5173,
+  },
+  build: {
+    emptyOutDir: false,   // mounted fs has read-only stale files from previous session
+  },
+  // ── Vitest configuration ─────────────────────────────────────────────────
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/__tests__/setup.ts'],
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+    },
+  },
+});

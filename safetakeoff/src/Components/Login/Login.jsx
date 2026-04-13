@@ -3,15 +3,16 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
 
 function Copyright(props) {
   return (
@@ -29,13 +30,22 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Login() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const { login, loading, error, isLoggedIn } = useAuthStore();
+
+  // If already logged in, redirect to dashboard
+  React.useEffect(() => {
+    if (isLoggedIn) navigate('/', { replace: true });
+  }, [isLoggedIn, navigate]);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    await login({
       email: data.get('email'),
       password: data.get('password'),
     });
+    // Navigation happens via the useEffect above once isLoggedIn flips to true
   };
 
   return (
@@ -56,10 +66,15 @@ export default function Login() {
           <Typography component="h1" variant="h3">
             Safe-TakeOff
           </Typography>
-          <Typography component="p" variant="p">
+          <Typography component="p" variant="body2" color="text.secondary">
             Powered by flake inc.
           </Typography>
-          <br/>
+          <br />
+          {error && (
+            <Alert severity="error" sx={{ width: '100%', mb: 1 }}>
+              {error}
+            </Alert>
+          )}
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -81,28 +96,19 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
+              startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
             >
-              Sign In
+              {loading ? 'Signing in…' : 'Sign In'}
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 30, mb: 4 }} />
+        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );
