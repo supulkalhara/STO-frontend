@@ -1,0 +1,18 @@
+# netlify.toml — Netlify build & deploy config
+# Connect your GitHub repo at https://app.netlify.com → Add new site → Import from Git
+# No GitHub Actions needed — Netlify runs its own build pipeline.
+
+[build]
+  base    = "safetakeoff"          # subfolder containing package.json
+  command = "npm run build"
+  publish = "safetakeoff/dist"     # relative to repo root
+
+[build.environment]
+  NODE_VERSION    = "20"
+  VITE_BASE_PATH  = "/"            # Netlify serves from root, not a sub-path
+
+# SPA routing — send all 404s back to index.html so React Router works
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200

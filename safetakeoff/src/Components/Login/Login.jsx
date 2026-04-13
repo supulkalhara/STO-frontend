@@ -1,34 +1,29 @@
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Box from '@mui/material/Box';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Container,
+  Alert,
+  CircularProgress,
+  Paper,
+  InputAdornment,
+  IconButton,
+  Divider,
+  alpha,
+} from '@mui/material';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Alert from '@mui/material/Alert';
-import CircularProgress from '@mui/material/CircularProgress';
-import Paper from '@mui/material/Paper';
-import { useNavigate } from 'react-router-dom';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="rgba(255,255,255,0.6)" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="#">
-        flake inc.
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 export default function Login() {
   const navigate = useNavigate();
   const { login, loading, error, isLoggedIn } = useAuthStore();
+  const [showPassword, setShowPassword] = React.useState(false);
 
   // If already logged in, redirect to dashboard
   React.useEffect(() => {
@@ -42,160 +37,173 @@ export default function Login() {
       email: data.get('email'),
       password: data.get('password'),
     });
-    // Navigation happens via the useEffect above once isLoggedIn flips to true
   };
 
   return (
     <Box
       sx={{
         minHeight: '100vh',
+        bgcolor: '#0a0e1a',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-        background: 'linear-gradient(135deg, #0a0d14 0%, #0d1b2a 40%, #1b2838 100%)',
+        py: 4,
+        '&::before': {
+          content: '""',
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          background:
+            'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,180,216,0.08) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        },
       }}
     >
-      {/* Globe background image */}
-      <Box
-        sx={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: 'url(/globe-bg.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.35,
-          filter: 'blur(1px)',
-          zIndex: 0,
-        }}
-      />
-
-      {/* Radial glow overlay */}
-      <Box
-        sx={{
-          position: 'absolute',
-          inset: 0,
-          background: 'radial-gradient(ellipse at center, rgba(0,200,120,0.06) 0%, transparent 70%)',
-          zIndex: 0,
-        }}
-      />
-
-      <Container component="main" maxWidth="xs" sx={{ position: 'relative', zIndex: 1 }}>
-        <Paper
-          elevation={24}
+      <Container maxWidth="xs">
+        {/* Back to home */}
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate('/')}
           sx={{
-            p: 5,
-            borderRadius: 3,
-            background: 'rgba(13, 17, 23, 0.85)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(0, 200, 83, 0.15)',
-            boxShadow: '0 0 60px rgba(0, 200, 83, 0.08), 0 20px 60px rgba(0,0,0,0.5)',
+            color: '#8eafc7',
+            mb: 2,
+            '&:hover': { color: '#00b4d8', bgcolor: 'transparent' },
           }}
         >
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Avatar
-              sx={{
-                m: 1,
-                width: 56,
-                height: 56,
-                bgcolor: 'transparent',
-                border: '2px solid rgba(0,200,83,0.5)',
-                boxShadow: '0 0 20px rgba(0,200,83,0.2)',
-              }}
-            >
-              <FlightTakeoffIcon sx={{ color: '#00c853', fontSize: 28 }} />
-            </Avatar>
-            <Typography
-              component="h1"
-              variant="h4"
-              sx={{
-                fontFamily: "'Roboto Mono', monospace",
-                fontWeight: 700,
-                color: '#e8eaf6',
-                letterSpacing: '0.1em',
-                mt: 1,
-              }}
-            >
-              Safe-TakeOff
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'rgba(144,164,174,0.8)', mt: 0.5 }}>
-              Aviation Decision Support Platform
-            </Typography>
+          Back to Home
+        </Button>
 
-            {error && (
-              <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
-                {error}
-              </Alert>
-            )}
-
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3, width: '100%' }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    color: '#e8eaf6',
-                    '& fieldset': { borderColor: 'rgba(144,164,174,0.3)' },
-                    '&:hover fieldset': { borderColor: 'rgba(0,200,83,0.5)' },
-                    '&.Mui-focused fieldset': { borderColor: '#00c853' },
-                  },
-                  '& .MuiInputLabel-root': { color: 'rgba(144,164,174,0.7)' },
-                  '& .MuiInputLabel-root.Mui-focused': { color: '#00c853' },
-                }}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    color: '#e8eaf6',
-                    '& fieldset': { borderColor: 'rgba(144,164,174,0.3)' },
-                    '&:hover fieldset': { borderColor: 'rgba(0,200,83,0.5)' },
-                    '&.Mui-focused fieldset': { borderColor: '#00c853' },
-                  },
-                  '& .MuiInputLabel-root': { color: 'rgba(144,164,174,0.7)' },
-                  '& .MuiInputLabel-root.Mui-focused': { color: '#00c853' },
-                }}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                disabled={loading}
-                startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
-                sx={{
-                  mt: 3,
-                  mb: 2,
-                  py: 1.5,
-                  bgcolor: '#00c853',
-                  color: '#000',
-                  fontWeight: 700,
-                  fontFamily: "'Roboto Mono', monospace",
-                  letterSpacing: '0.1em',
-                  '&:hover': { bgcolor: '#00e676', boxShadow: '0 0 20px rgba(0,200,83,0.3)' },
-                  '&:disabled': { bgcolor: 'rgba(0,200,83,0.3)', color: 'rgba(0,0,0,0.5)' },
-                }}
-              >
-                {loading ? 'Signing in…' : 'SIGN IN'}
-              </Button>
+        {/* Logo */}
+        <Box sx={{ textAlign: 'center', mb: 3 }}>
+          <RouterLink to="/" style={{ textDecoration: 'none' }}>
+            <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
+              <FlightTakeoffIcon sx={{ color: '#00b4d8', fontSize: 30 }} />
+              <Typography variant="h5" fontWeight={700} sx={{ color: '#e0e6f0' }}>
+                Safe<span style={{ color: '#00b4d8' }}>TakeOff</span>
+              </Typography>
             </Box>
+          </RouterLink>
+          <Typography variant="body2" sx={{ color: '#8eafc7', mt: 0.5 }}>
+            Sign in to your ATC account
+          </Typography>
+        </Box>
+
+        <Paper
+          sx={{
+            p: 4,
+            bgcolor: alpha('#ffffff', 0.04),
+            border: '1px solid',
+            borderColor: alpha('#00b4d8', 0.2),
+            borderRadius: 3,
+          }}
+        >
+          {error && (
+            <Alert
+              severity="error"
+              sx={{ mb: 2, bgcolor: alpha('#ef5350', 0.1), color: '#ef9a9a' }}
+            >
+              {error}
+            </Alert>
+          )}
+
+          <Box component="form" onSubmit={handleSubmit} noValidate>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              InputLabelProps={{ sx: { color: '#8eafc7' } }}
+              sx={fieldSx}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
+              id="password"
+              autoComplete="current-password"
+              InputLabelProps={{ sx: { color: '#8eafc7' } }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword((s) => !s)}
+                      edge="end"
+                      sx={{ color: '#8eafc7' }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={fieldSx}
+            />
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              disabled={loading}
+              sx={{
+                mt: 3,
+                mb: 2,
+                bgcolor: '#00b4d8',
+                color: '#0a0e1a',
+                fontWeight: 700,
+                py: 1.3,
+                fontSize: '0.95rem',
+                '&:hover': { bgcolor: '#0096c7' },
+                '&:disabled': { bgcolor: alpha('#00b4d8', 0.4) },
+              }}
+            >
+              {loading ? (
+                <CircularProgress size={22} sx={{ color: '#0a0e1a' }} />
+              ) : (
+                'Sign In'
+              )}
+            </Button>
+
+            <Divider sx={{ borderColor: alpha('#ffffff', 0.08), my: 1 }} />
+
+            <Typography
+              variant="body2"
+              textAlign="center"
+              sx={{ color: '#8eafc7', mt: 1.5 }}
+            >
+              Don't have an account?{' '}
+              <RouterLink
+                to="/signup"
+                style={{ color: '#00b4d8', textDecoration: 'none', fontWeight: 600 }}
+              >
+                Create one
+              </RouterLink>
+            </Typography>
           </Box>
         </Paper>
-        <Copyright sx={{ mt: 4 }} />
+
+        <Typography
+          variant="caption"
+          display="block"
+          textAlign="center"
+          sx={{ color: alpha('#8eafc7', 0.5), mt: 3 }}
+        >
+          © {new Date().getFullYear()} SafeTakeOff · Demo credentials: atc@safetakeoff.dev
+        </Typography>
       </Container>
     </Box>
   );
 }
+
+const fieldSx = {
+  '& .MuiOutlinedInput-root': {
+    color: '#e0e6f0',
+    '& fieldset': { borderColor: alpha('#00b4d8', 0.25) },
+    '&:hover fieldset': { borderColor: alpha('#00b4d8', 0.5) },
+    '&.Mui-focused fieldset': { borderColor: '#00b4d8' },
+  },
+};

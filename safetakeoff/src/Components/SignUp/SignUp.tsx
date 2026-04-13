@@ -17,6 +17,7 @@ import {
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { signUp } from '../../services/authService';
 
 interface SignUpForm {
@@ -141,6 +142,19 @@ export default function SignUp() {
       }}
     >
       <Container maxWidth="xs">
+        {/* Back to home */}
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate('/')}
+          sx={{
+            color: '#8eafc7',
+            mb: 2,
+            '&:hover': { color: '#00b4d8', bgcolor: 'transparent' },
+          }}
+        >
+          Back to Home
+        </Button>
+
         {/* Logo */}
         <Box sx={{ textAlign: 'center', mb: 3 }}>
           <RouterLink to="/" style={{ textDecoration: 'none' }}>
