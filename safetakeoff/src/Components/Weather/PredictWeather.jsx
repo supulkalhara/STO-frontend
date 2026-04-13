@@ -62,7 +62,7 @@ export default function PredictWeather() {
     <>
       <ResponsiveAppBar />
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <Box component="main" sx={{ flex: 1, py: 4, px: 4, bgcolor: '#eaeff1' }}>
+        <Box component="main" sx={{ flex: 1, py: 4, px: 4, bgcolor: 'background.default' }}>
 
           {/* Header */}
           <Typography variant="h5" fontWeight={700} gutterBottom>
@@ -163,7 +163,7 @@ export default function PredictWeather() {
                 sx={{
                   mt: 1,
                   p: 1.5,
-                  bgcolor: '#f5f5f5',
+                  bgcolor: 'action.hover',
                   borderRadius: 1,
                   fontFamily: 'monospace',
                   fontSize: '0.85rem',
@@ -179,7 +179,7 @@ export default function PredictWeather() {
           )}
         </Box>
 
-        <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
+        <Box component="footer" sx={{ p: 2, bgcolor: 'background.default' }}>
           <Copyright />
         </Box>
       </Box>

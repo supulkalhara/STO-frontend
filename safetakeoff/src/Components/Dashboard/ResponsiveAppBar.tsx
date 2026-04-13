@@ -20,9 +20,7 @@ import { useColorMode } from '../../App';
 
 // ── Nav items including Phase 2 new routes ───────────────────────────────────
 const NAV_PAGES: { label: string; path: string }[] = [
-  { label: 'Weather', path: '/weather' },
-  { label: 'Flights', path: '/aircrafts' },
-  { label: 'NOTAM', path: '/notam' },
+  { label: 'Dashboard', path: '/' },
   { label: 'Go/No-Go', path: '/gonogo' },
   { label: 'Wake Sep.', path: '/wake-turbulence' },
   { label: 'Config', path: '/config' },

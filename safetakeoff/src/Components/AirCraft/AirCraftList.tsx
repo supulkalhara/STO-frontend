@@ -147,7 +147,7 @@ export default function AirCraftList() {
         {!loading && aircraft.length > 0 && (
           <Table size="small">
             <TableHead>
-              <TableRow sx={{ bgcolor: '#f5f5f5' }}>
+              <TableRow sx={{ bgcolor: 'action.hover' }}>
                 <TableCell><strong>Registration</strong></TableCell>
                 <TableCell><strong>Callsign</strong></TableCell>
                 <TableCell><strong>ICAO Type</strong></TableCell>

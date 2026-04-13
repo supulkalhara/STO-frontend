@@ -2,27 +2,34 @@ import React, { useState } from "react";
 import {
   Grid,
   TextField,
-  FormControlLabel,
   FormControl,
-  FormLabel,
-  RadioGroup,
-  Radio,
+  InputLabel,
   Select,
   MenuItem,
-  Slider,
-  Button
+  Button,
+  Box,
+  Typography
 } from "@mui/material";
 
 const defaultValues = {
-  name: "",
-  age: 0,
-  gender: "",
-  os: "",
-  favoriteNumber: 0,
+  icao_type_designator: "",
+  registration: "",
+  callsign: "",
+  operator: "",
+  wake_turbulence_category: "M",
+  engine_type: "Jet",
+  mtow_kg: 0,
+  v1_kts: 0,
+  vr_kts: 0,
+  v2_kts: 0,
+  equipment_suffixes: "",
+  rnav_approved: "N",
+  rvsm_approved: "N",
 };
 
-const Form = () => {
+const Form = ({ onSubmitSuccess }) => {
   const [formValues, setFormValues] = useState(defaultValues);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({
@@ -30,121 +37,136 @@ const Form = () => {
       [name]: value,
     });
   };
-  const handleSliderChange = (name) => (e, value) => {
-    setFormValues({
-      ...formValues,
-      [name]: value,
-    });
-  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(formValues);
+    // In a real app, this would call the store's addAircraft
+    console.log("Submitting aircraft:", formValues);
+    if (onSubmitSuccess) onSubmitSuccess(formValues);
   };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <Grid container alignItems="center" justifyContent="center" direction="column">
-        <Grid item>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+      <Typography variant="subtitle2" gutterBottom color="text.secondary">
+        AIRCRAFT SPECIFICATIONS (ICAO)
+      </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
           <TextField
-            id="name-input"
-            name="name"
-            label="Name"
-            type="text"
-            value={formValues.name}
+            fullWidth
+            required
+            name="registration"
+            label="Registration (e.g. 4R-ALN)"
+            value={formValues.registration}
             onChange={handleInputChange}
+            size="small"
           />
         </Grid>
-        <Grid item>
+        <Grid item xs={12} sm={6}>
           <TextField
-            id="age-input"
-            name="age"
-            label="Age"
-            type="number"
-            value={formValues.age}
+            fullWidth
+            required
+            name="callsign"
+            label="Callsign (e.g. ALK201)"
+            value={formValues.callsign}
             onChange={handleInputChange}
+            size="small"
           />
         </Grid>
-        <Grid item>
-          <FormControl>
-            <FormLabel>Gender</FormLabel>
-            <RadioGroup
-              name="gender"
-              value={formValues.gender}
-              onChange={handleInputChange}
-              row
-            >
-              <FormControlLabel
-                key="male"
-                value="male"
-                control={<Radio size="small" />}
-                label="Male"
-              />
-              <FormControlLabel
-                key="female"
-                value="female"
-                control={<Radio size="small" />}
-                label="Female"
-              />
-              <FormControlLabel
-                key="other"
-                value="other"
-                control={<Radio size="small" />}
-                label="Other"
-              />
-            </RadioGroup>
-          </FormControl>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            required
+            name="icao_type_designator"
+            label="Type (e.g. A333)"
+            value={formValues.icao_type_designator}
+            onChange={handleInputChange}
+            size="small"
+          />
         </Grid>
-        <Grid item>
-          <FormControl>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            name="operator"
+            label="Operator (e.g. SriLankan)"
+            value={formValues.operator}
+            onChange={handleInputChange}
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth size="small">
+            <InputLabel>Wake Turbulence Category</InputLabel>
             <Select
-              name="os"
-              value={formValues.os}
+              name="wake_turbulence_category"
+              value={formValues.wake_turbulence_category}
+              label="Wake Turbulence Category"
               onChange={handleInputChange}
             >
-              <MenuItem key="mac" value="mac">
-                Mac
-              </MenuItem>
-              <MenuItem key="windows" value="windows">
-                Windows
-              </MenuItem>
-              <MenuItem key="linux " value="linux">
-                Linux
-              </MenuItem>
+              <MenuItem value="L">L (Light)</MenuItem>
+              <MenuItem value="M">M (Medium)</MenuItem>
+              <MenuItem value="H">H (Heavy)</MenuItem>
+              <MenuItem value="J">J (Super)</MenuItem>
             </Select>
           </FormControl>
         </Grid>
-        <Grid item>
-          <div style={{ width: "400px" }}>
-            Favorite Number
-            <Slider
-              value={formValues.favoriteNumber}
-              onChange={handleSliderChange("favoriteNumber")}
-              defaultValue={1}
-              step={1}
-              min={1}
-              max={3}
-              marks={[
-                {
-                  value: 1,
-                  label: "1",
-                },
-                {
-                  value: 2,
-                  label: "2",
-                },
-                {
-                  value: 3,
-                  label: "3",
-                },
-              ]}
-              valueLabelDisplay="off"
-            />
-          </div>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth size="small">
+            <InputLabel>Engine Type</InputLabel>
+            <Select
+              name="engine_type"
+              value={formValues.engine_type}
+              label="Engine Type"
+              onChange={handleInputChange}
+            >
+              <MenuItem value="Jet">Jet</MenuItem>
+              <MenuItem value="Turboprop">Turboprop</MenuItem>
+              <MenuItem value="Piston">Piston</MenuItem>
+              <MenuItem value="Electric">Electric</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
-        <Button variant="contained" color="primary" type="submit">
-          Submit
-        </Button>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            fullWidth
+            type="number"
+            name="v1_kts"
+            label="V1 (kts)"
+            value={formValues.v1_kts}
+            onChange={handleInputChange}
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            fullWidth
+            type="number"
+            name="vr_kts"
+            label="Vr (kts)"
+            value={formValues.vr_kts}
+            onChange={handleInputChange}
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            fullWidth
+            type="number"
+            name="v2_kts"
+            label="V2 (kts)"
+            value={formValues.v2_kts}
+            onChange={handleInputChange}
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Button variant="contained" color="primary" type="submit" fullWidth>
+            REGISTER AIRCRAFT
+          </Button>
+        </Grid>
       </Grid>
-    </form>
+    </Box>
   );
 };
+
 export default Form;

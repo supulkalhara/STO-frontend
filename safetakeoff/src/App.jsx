@@ -55,10 +55,20 @@ const atcDark = {
 const atcLight = {
   palette: {
     mode: "light",
+    background: { default: "#f4f6f9", paper: "#ffffff" },
     primary:   { main: "#1b5e20" },
     secondary: { main: "#e65100" },
+    text:      { primary: "#1a1a2e", secondary: "#546e7a" },
   },
-  typography: { fontFamily: "'Roboto', sans-serif", fontSize: 13 },
+  typography: { fontFamily: "'Roboto', 'Helvetica', sans-serif", fontSize: 13 },
+  components: {
+    MuiPaper: { styleOverrides: { root: { backgroundImage: "none" } } },
+    MuiTableRow: {
+      styleOverrides: {
+        root: { "&:hover": { backgroundColor: "rgba(27,94,32,0.04)" } },
+      },
+    },
+  },
 };
 
 // Spinner shown while lazy chunks load
@@ -71,7 +81,7 @@ function RouteLoader() {
 }
 
 function App() {
-  const [mode, setMode] = useState("dark");
+  const [mode, setMode] = useState("light");
 
   const colorMode = useMemo(
     () => ({
