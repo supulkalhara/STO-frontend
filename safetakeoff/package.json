@@ -21,13 +21,10 @@
     "dev": "vite",
     "start": "vite",
     "build": "vite build",
-    "build:pages": "VITE_BASE_PATH=/STO-frontend/ vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "deploy:pages": "npm run build:pages && npx gh-pages -d dist",
-    "deploy:netlify": "netlify deploy --prod --dir=dist"
+    "test:watch": "vitest"
   },
   "browserslist": {
     "production": [
