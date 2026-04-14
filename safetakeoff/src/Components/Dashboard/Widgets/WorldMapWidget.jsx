@@ -13,11 +13,11 @@ const FLIGHTS = [
 
 export default function WorldMapWidget() {
   const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null); // holds the live Leaflet map — survives re-renders
   const [selected, setSelected] = useState(null);
-  const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
-    // Inject Leaflet CSS
+    // Inject Leaflet CSS once
     if (!document.getElementById('leaflet-css')) {
       const link = document.createElement('link');
       link.id = 'leaflet-css';
@@ -26,74 +26,79 @@ export default function WorldMapWidget() {
       document.head.appendChild(link);
     }
 
-    // Inject Leaflet JS
+    function initMap() {
+      // Guard: container missing or map already initialised on this mount
+      if (!mapRef.current || mapInstanceRef.current) return;
+
+      const L = window.L;
+
+      // Leaflet leaves _leaflet_id on the div after remove() in dev fast-refresh;
+      // delete it so L.map() treats the container as fresh.
+      if (mapRef.current._leaflet_id) {
+        delete mapRef.current._leaflet_id;
+      }
+
+      const map = L.map(mapRef.current, { zoomControl: true }).setView([20, 0], 2);
+      mapInstanceRef.current = map;  // store instance so cleanup can destroy it
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; CartoDB',
+        maxZoom: 19,
+      }).addTo(map);
+
+      const planeIcon = L.divIcon({
+        className: 'plane-icon',
+        html: `<div style="transform:rotate(45deg);color:#00c853;text-shadow:0 0 10px #00c853;">✈</div>`,
+        iconSize: [20, 20],
+      });
+
+      const airportIcon = L.divIcon({
+        className: 'airport-icon',
+        html: `<div style="color:#fff;border:1px solid #fff;border-radius:50%;width:6px;height:6px;background:#fff;"></div>`,
+        iconSize: [6, 6],
+      });
+
+      FLIGHTS.forEach(f => {
+        const marker = L.marker([f.lat, f.lng], { icon: planeIcon }).addTo(map);
+        marker.on('click', () => setSelected(f));
+        if (f.dep === 'EGLL' || f.arr === 'EGLL') {
+          L.polyline([[51.47, -0.454], [f.lat, f.lng]], {
+            color: '#00c853', weight: 1, dashArray: '5, 10', opacity: 0.3,
+          }).addTo(map);
+        }
+      });
+
+      const hubs = [
+        { name: 'EGLL', lat: 51.47,  lng: -0.454 },
+        { name: 'KJFK', lat: 40.64,  lng: -73.778 },
+        { name: 'VCBI', lat:  7.18,  lng:  79.88  },
+        { name: 'OMDB', lat: 25.25,  lng:  55.364 },
+      ];
+      hubs.forEach(h => {
+        L.marker([h.lat, h.lng], { icon: airportIcon }).addTo(map)
+          .bindTooltip(h.name, { permanent: true, direction: 'top', className: 'airport-label' });
+      });
+    }
+
+    // Load Leaflet JS if not already present
     if (!window.L) {
       const script = document.createElement('script');
+      script.id = 'leaflet-js';
       script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
       script.async = true;
-      script.onload = () => initMap();
+      script.onload = initMap;
       document.head.appendChild(script);
     } else {
       initMap();
     }
 
-    function initMap() {
-      if (!mapRef.current || mapLoaded) return;
-      
-      const L = window.L;
-      // Dark mode map from Stadia Maps or CartoDB
-      const map = L.map(mapRef.current).setView([20, 0], 2);
-      
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; CartoDB',
-        maxZoom: 19
-      }).addTo(map);
-
-      // Create icons
-      const planeIcon = L.divIcon({
-        className: 'plane-icon',
-        html: `<div style="transform: rotate(45deg); color: #00c853; text-shadow: 0 0 10px #00c853;">✈</div>`,
-        iconSize: [20, 20]
-      });
-
-      const airportIcon = L.divIcon({
-        className: 'airport-icon',
-        html: `<div style="color: #fff; font-size: 10px; border: 1px solid #fff; border-radius: 50%; width: 6px; height: 6px; background: #fff;"></div>`,
-        iconSize: [6, 6]
-      });
-
-      // Add planes
-      FLIGHTS.forEach(f => {
-        const marker = L.marker([f.lat, f.lng], { icon: planeIcon }).addTo(map);
-        marker.on('click', () => setSelected(f));
-        
-        // Add path line (simulated curve or straight)
-        // Home airport is EGLL for demo
-        if (f.dep === 'EGLL' || f.arr === 'EGLL') {
-          L.polyline([[51.47, -0.454], [f.lat, f.lng]], {
-            color: '#00c853',
-            weight: 1,
-            dashArray: '5, 10',
-            opacity: 0.3
-          }).addTo(map);
-        }
-      });
-
-      // Add main hubs
-      const hubs = [
-        { name: 'EGLL', lat: 51.47, lng: -0.454 },
-        { name: 'KJFK', lat: 40.64, lng: -73.778 },
-        { name: 'VCBI', lat: 7.18, lng: 79.88 },
-        { name: 'OMDB', lat: 25.25, lng: 55.364 }
-      ];
-
-      hubs.forEach(h => {
-        L.marker([h.lat, h.lng], { icon: airportIcon }).addTo(map)
-          .bindTooltip(h.name, { permanent: true, direction: 'top', className: 'airport-label' });
-      });
-
-      setMapLoaded(true);
-    }
+    // ── Cleanup: destroy map on unmount so next mount starts fresh ──────────
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
   }, []);
 
   return (
