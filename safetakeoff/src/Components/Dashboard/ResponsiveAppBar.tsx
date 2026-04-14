@@ -17,13 +17,14 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { useNavigate } from 'react-router-dom';
 import { useColorMode } from '../../App';
+import { useAuthStore } from '../../store/authStore';
 
 // ── Nav items including Phase 2 new routes ───────────────────────────────────
 const NAV_PAGES: { label: string; path: string }[] = [
-  { label: 'Dashboard', path: '/' },
-  { label: 'Go/No-Go', path: '/gonogo' },
-  { label: 'Wake Sep.', path: '/wake-turbulence' },
-  { label: 'Config', path: '/config' },
+  { label: 'Dashboard',  path: '/dashboard' },   // Fix: was '/' → caused redirect to landing page
+  { label: 'Go/No-Go',  path: '/gonogo' },
+  { label: 'Wake Sep.',  path: '/wake-turbulence' },
+  { label: 'Config',     path: '/config' },
 ];
 
 const settings = ['Profile Settings', 'Edit Dashboard', 'Logout'];
@@ -33,6 +34,7 @@ export default function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const { toggleColorMode, mode } = useColorMode();
+  const logout = useAuthStore((s) => s.logout);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) =>
     setAnchorElNav(event.currentTarget);
@@ -48,8 +50,7 @@ export default function ResponsiveAppBar() {
   const handleCloseUserMenu = (setting?: string) => {
     setAnchorElUser(null);
     if (setting === 'Logout') {
-      localStorage.removeItem('access_token');
-      sessionStorage.removeItem('access_token');
+      logout();           // clears sessionStorage + resets Zustand isLoggedIn → false
       navigate('/login');
     }
   };
@@ -59,14 +60,14 @@ export default function ResponsiveAppBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* Logo — desktop */}
-          <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: 'primary.main', cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>
             <FlightTakeoffIcon sx={{ color: 'black' }} />
           </Avatar>
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
+            component="span"
+            onClick={() => navigate('/dashboard')}
             sx={{
               mr: 3,
               display: { xs: 'none', md: 'flex' },
@@ -75,6 +76,7 @@ export default function ResponsiveAppBar() {
               letterSpacing: '.2rem',
               color: 'inherit',
               textDecoration: 'none',
+              cursor: 'pointer',
             }}
           >
             SAFE-TAKEOFF
@@ -107,8 +109,8 @@ export default function ResponsiveAppBar() {
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
+            component="span"
+            onClick={() => navigate('/dashboard')}
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -117,6 +119,7 @@ export default function ResponsiveAppBar() {
               fontWeight: 700,
               color: 'inherit',
               textDecoration: 'none',
+              cursor: 'pointer',
             }}
           >
             STO
