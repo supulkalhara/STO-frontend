@@ -1,14 +1,10 @@
 # Safe TakeOff — Frontend (STO-frontend)
 
-> React + TypeScript ATC decision-support dashboard.  
-> Live at **https://safetakeoff.supul9229kalhara.workers.dev**
+> React + TypeScript ATC decision-support dashboard.  Live at **https://safetakeoff.supul9229kalhara.workers.dev**
 
 ---
-
 ## What it does
-
 Safe TakeOff gives Air Traffic Controllers a real-time dashboard to evaluate flight departure safety. The frontend provides:
-
 - **Go / No-Go panel** — side-by-side Claude Agent and XGBoost recommendations with confidence scores, reasoning, and risk factors
 - **Decision history** — full audit trail of past decisions with ATC feedback form
 - **ML metrics** — live model accuracy dashboard per aerodrome (agent vs XGBoost)
@@ -20,9 +16,7 @@ Safe TakeOff gives Air Traffic Controllers a real-time dashboard to evaluate fli
 - **Dark ATC theme** — EUROCONTROL-inspired palette for low-light ops rooms
 
 ---
-
 ## Tech stack
-
 | Layer | Technology |
 |-------|-----------|
 | Framework | React 18 + TypeScript |
@@ -36,9 +30,7 @@ Safe TakeOff gives Air Traffic Controllers a real-time dashboard to evaluate fli
 | Deployment | Cloudflare Workers (Static Assets) |
 
 ---
-
 ## Project structure
-
 ```
 src/
 ├── App.jsx                        # Root router, theme, protected routes
@@ -83,15 +75,12 @@ src/
 ```
 
 ---
-
 ## Getting started locally
-
 ### Prerequisites
 - Node.js 20+
 - Backend running at `http://localhost:8000` (see STO-server README)
 
 ### Setup
-
 ```bash
 # 1. Clone and enter app directory
 git clone https://github.com/supulkalhara/STO-frontend.git
@@ -110,16 +99,13 @@ npm run dev
 ```
 
 ### Login with demo credentials
-
 | Email | Password | Role |
 |-------|----------|------|
 | `atc@safetakeoff.dev` | `SafeTakeOff2026!` | ATC Officer |
 | `supervisor@safetakeoff.dev` | `SafeTakeOff2026!` | ATC Supervisor |
 
 ---
-
 ## Available scripts
-
 ```bash
 npm run dev          # Start dev server (port 5173)
 npm run build        # Production build → dist/
@@ -130,9 +116,7 @@ npm run test:watch   # Watch mode tests
 ```
 
 ---
-
 ## Pages and routes
-
 | Route | Access | Description |
 |-------|--------|-------------|
 | `/` | Public | Landing page with feature overview |
@@ -147,9 +131,7 @@ npm run test:watch   # Watch mode tests
 | `/config` | Protected | App configuration |
 
 ---
-
 ## Using the dashboard
-
 ### 1. Login
 Go to `/login` → enter your credentials → you land at `/dashboard`.
 
@@ -171,74 +153,5 @@ Go to `/login` → enter your credentials → you land at `/dashboard`.
 6. Click **This Helps / Not Helpful** to record feedback
 
 ### 4. Decision history (`/dashboard` → Decision History tab)
-- Table of all recorded decisions: callsign, ICAO, agent prediction, XGBoost prediction, ATC decision, outcome
-- Click **Add Feedback** on any row to submit the actual outcome:
-  - ATC Decision: GO / CAUTION / NO-GO
-  - Outcome: COMPLETED_SAFELY / DIVERTED / INCIDENT
-  - Free-text reason
-- This feedback is used to retrain models quarterly
-
-### 5. Model metrics (`/dashboard` → Model Metrics tab)
-- Key cards: total decisions, feedback rate, agent accuracy %, XGBoost accuracy %
-- Bar charts: accuracy comparison, average confidence, precision by decision class
-- Filter by time period: 7 / 30 / 90 days
-- Accuracy shown green (≥80%), amber (≥70%), red (<70%)
-
----
-
-## Environment variables
-
-| Variable | Dev value | Production value |
-|----------|-----------|-----------------|
-| `VITE_API_URL` | `http://localhost:8000` | `https://sto-server.onrender.com` |
-
-Production value is set in the Cloudflare Workers dashboard under **Variables & Secrets**.
-
----
-
-## Deployment (Cloudflare Workers)
-
-Auto-deploys from the `main` branch via CI:
-
-```
-Build command:   npm run build
-Output dir:      dist/
-Deploy command:  npx wrangler deploy
-```
-
-SPA routing (React Router) is handled by `wrangler.jsonc`:
-```jsonc
-"assets": { "not_found_handling": "single-page-application" }
-```
-
-All unknown URLs serve `index.html` and React Router takes over client-side.
-
-### Adding a new environment variable
-
-1. Cloudflare dashboard → Workers → `safetakeoff` → **Settings** → **Variables & Secrets**
-2. Add key/value → **Save**
-3. Re-deploy or push a new commit to pick it up
-
----
-
-## Colour palette (dark ATC theme)
-
-| Token | Hex | Use |
-|-------|-----|-----|
-| Background | `#0a0d11` | Page background |
-| Paper | `#13181f` | Card / panel background |
-| Primary (ATC green) | `#00c853` | Accents, GO decisions |
-| Secondary (amber) | `#ff8f00` | CAUTION decisions |
-| Error | `#f44336` | NO-GO decisions |
-| Info (cyan) | `#29b6f6` | Highlights |
-| Text primary | `#e8eaf6` | Body copy |
-| Text secondary | `#90a4ae` | Labels |
-
----
-
-## Known limitations
-
-- Map data is simulated (static flight coordinates for demo)
-- Weather and NOTAM data depend on external APIs — may be rate-limited
-- Model accuracy is ~62% on synthetic data; improves with real ATC feedback (target 80%+)
-- Render free tier sleeps after 15 min inactivity — first login after idle may take ~30 s
+- Table of all recorded decisions: callsign, ICAO, agent prediction, XGBoost prediction, ATC feedback form
+…[truncated]
