@@ -2,7 +2,7 @@
 
 React + TypeScript ATC decision-support dashboard.
 
-**Live:** https://safetakeoff.supul9229kalhara.workers.dev  
+**Live:** https://safetakeoff.supul9229kalhara.workers.dev
 **Detailed docs:** [safetakeoff/README.md](safetakeoff/README.md)
 
 ## Quick start
